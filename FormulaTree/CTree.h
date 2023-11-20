@@ -27,7 +27,7 @@ public:
     ~CTree();
 
     //Getters:
-    CNode* getRoot();
+    CNode* getRoot() const;
 
     // Przeciążony operator przypisania
     CTree& operator=(const CTree& other);
@@ -44,8 +44,8 @@ public:
     // Funkcja parsująca wyrażenie z notacji prefiksowej
     void parseExpression(const string& expression);
 
-    //// Przeciążony operator +=
-    //CTree& operator+=(const CTree& other);
+    // Przeciążony operator +=
+    CTree& operator+=(const CTree& other);
 
     // Przeciążony operator +
     friend CTree operator+(const CTree& lhs, const CTree& rhs);

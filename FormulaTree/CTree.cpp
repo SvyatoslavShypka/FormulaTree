@@ -48,7 +48,7 @@ using namespace std;
         deleteTree(root);
     }
 
-    CNode* CTree::getRoot()
+    CNode* CTree::getRoot() const
     {
         return root;
     }
@@ -107,19 +107,27 @@ using namespace std;
         root = parseNode(expression, offset);
     }
 
-    //// Przeciążony operator +=
-    //CTree& CTree::operator+=(const CTree& other)
-    //{
-    //    CNode* newRoot = root + other.root;
-    //    deleteTree(root);
-    //    root = newRoot;
-    //    return *this;
-    //}
+    // Funkcja pomocnicza do łączenia dwóch drzew
+    CNode* mergeTrees(const CNode* root1, const CNode* root2) {
+        if (!root1) return new CNode(root2->value);
+        if (!root2) return new CNode(root1->value);
+
+        CNode* newRoot = new CNode(root1->value);
+        newRoot->children.push_back(mergeTrees(root1->children[0], root2->children[0]));
+        newRoot->children.push_back(mergeTrees(root1->children[1], root2->children[1]));
+
+        return newRoot;
+    }
+
+    // Przeciążony operator +=
+    CTree& CTree::operator+=(const CTree& other) {
+        root = mergeTrees(root, other.root);
+        return *this;
+    }
 
     // Przeciążony operator +
-    CTree operator+(const CTree& lhs, const CTree& rhs)
-    {
+    CTree operator+(const CTree& lhs, const CTree& rhs) {
         CTree result;
-        //result.root = lhs.root + rhs.root;
+        result.root = mergeTrees(lhs.getRoot(), rhs.getRoot());
         return result;
     }
