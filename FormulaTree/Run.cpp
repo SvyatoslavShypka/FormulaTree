@@ -1,4 +1,5 @@
 #include "CTree.h"
+#include "CNode.h"
 using namespace std;
 
 int main() {
@@ -9,6 +10,9 @@ int main() {
     cout << "Parsed expression: ";
     c_tree.printTree(c_tree.getRoot());
     cout << endl;
+
+    //CTree c_sum, c_a, c_b;
+    //c_sum = c_a + c_b;
 
     return 0;
 }

@@ -12,6 +12,8 @@ public:
     string value;
     vector<CNode*> children;
     CNode(string val);
+    ~CNode();
+
 
     // Przeciążony operator + dla łatwego łączenia drzew
     CNode* operator+(CNode* other);

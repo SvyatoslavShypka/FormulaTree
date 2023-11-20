@@ -8,7 +8,7 @@
 using namespace std;
 
     // Funkcja do usuwania drzewa
-    void deleteTree(CNode* node) {
+    void CTree::deleteTree(CNode* node) {
         if (node != nullptr) {
             for (auto child : node->children) {
                 deleteTree(child);
@@ -18,7 +18,7 @@ using namespace std;
     }
 
     // Funkcja pomocnicza do parsowania wyrażenia
-    CNode* parseNode(const string& expression, size_t& offset) {
+    CNode* CTree::parseNode(const string& expression, size_t& offset) {
         string value;
         while (offset < expression.size() && expression[offset] != ' ') {
             value += expression[offset++];
@@ -54,7 +54,7 @@ using namespace std;
     }
 
     // Przeciążony operator przypisania
-    CTree& operator=(const CTree& other) {
+    CTree& CTree::operator=(const CTree& other) {
         if (this != &other) {
             deleteTree(root);
             root = new CNode(other.root->value);
@@ -63,8 +63,10 @@ using namespace std;
         return *this;
     }
 
+    
+
     // Funkcja do kopiowania drzewa
-    void copyTree(CNode* dest, const CNode* source) {
+    void CTree::copyTree(CNode* dest, const CNode* source) {
         for (const auto child : source->children) {
             CNode* newChild = new CNode(child->value);
             dest->children.push_back(newChild);
@@ -73,7 +75,7 @@ using namespace std;
     }
 
     // Funkcja do wypisywania drzewa w notacji prefiksowej
-    void printTree(CNode* node) {
+    void CTree::printTree(CNode* node) {
         if (node != nullptr) {
             cout << node->value << " ";
             for (const auto child : node->children) {
@@ -83,7 +85,7 @@ using namespace std;
     }
 
     // Funkcja do obliczania wartości wyrażenia dla podanych wartości zmiennych
-    double evaluate(CNode* node, const map<string, double>& values) {
+    double CTree::evaluate(CNode* node, const map<string, double>& values) {
         if (node == nullptr) return 0.0;
 
         if (node->value == "+") {
@@ -101,22 +103,24 @@ using namespace std;
     }
 
     // Funkcja parsująca wyrażenie z notacji prefiksowej
-    void parseExpression(const string& expression) {
+    void CTree::parseExpression(const string& expression) {
         size_t offset = 0;
         root = parseNode(expression, offset);
     }
 
-    // Przeciążony operator +
-    friend CTree operator+(const CTree& lhs, const CTree& rhs) {
-        CTree result;
-        result.root = lhs.root + rhs.root;
-        return result;
-    }
+    //// Przeciążony operator +=
+    //CTree& CTree::operator+=(const CTree& other)
+    //{
+    //    CNode* newRoot = root + other.root;
+    //    deleteTree(root);
+    //    root = newRoot;
+    //    return *this;
+    //}
 
-    // Przeciążony operator +=
-    CTree& operator+=(const CTree& other) {
-        CNode* newRoot = root + other.root;
-        deleteTree(root);
-        root = newRoot;
-        return *this;
+    // Przeciążony operator +
+    CTree operator+(const CTree& lhs, const CTree& rhs)
+    {
+        CTree result;
+        //result.root = lhs.root + rhs.root;
+        return result;
     }
