@@ -18,7 +18,7 @@ using namespace std;
     }
 
     // Funkcja pomocnicza do parsowania wyrażenia
-    CNode* parseNode(const string& expression, size_t& offset) {
+    CNode* CTree::parseNode(const string& expression, size_t& offset) {
         string value;
         while (offset < expression.size() && expression[offset] != ' ') {
             value += expression[offset++];
