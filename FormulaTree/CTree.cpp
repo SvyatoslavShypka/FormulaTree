@@ -18,7 +18,7 @@ using namespace std;
     }
 
     // Funkcja pomocnicza do parsowania wyrażenia
-    CNode* CTree::parseNode(const string& expression, size_t& offset) {
+    CNode* parseNode(const string& expression, size_t& offset) {
         string value;
         while (offset < expression.size() && expression[offset] != ' ') {
             value += expression[offset++];
@@ -26,12 +26,12 @@ using namespace std;
 
         CNode* newNode = new CNode(value);
 
-        if (offset < expression.size() && expression[offset] == ' ') {
-            offset++; // Przesunięcie wskaźnika na kolejny znak
-            while (expression[offset] != '(' && expression[offset] != ')') {
+        //Check for children (subexpressions)
+        while (offset < expression.size() && expression[offset] == ' ') {
+            offset++; // Skip space
+            if (offset < expression.size()) {
                 newNode->children.push_back(parseNode(expression, offset));
             }
-            offset++; // Przesunięcie wskaźnika po nawiasie ")".
         }
 
         return newNode;
@@ -62,8 +62,7 @@ using namespace std;
         }
         return *this;
     }
-
-    
+        
 
     // Funkcja do kopiowania drzewa
     void CTree::copyTree(CNode* dest, const CNode* source) {
