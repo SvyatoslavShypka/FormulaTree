@@ -17,4 +17,5 @@ public:
 
     // Przeciążony operator + dla łatwego łączenia drzew
     CNode* operator+(CNode* other);
+    bool isVariable() const;
 };

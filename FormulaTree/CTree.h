@@ -5,6 +5,7 @@
 #include <map>
 #include <cmath>
 #include <sstream>
+#include <set>
 #include "CNode.h"
 using namespace std;
 
@@ -46,6 +47,13 @@ public:
 
     // Przeciążony operator +=
     CTree& operator+=(const CTree& other);
+
+    // Funkcja zwracająca liczbę zmiennych w drzewie
+    size_t numberOfVariablesInTree() const;
+
+    void collectVariables(const CNode* node, set<std::string>& variables) const;
+
+    string getVariableNameAtIndex(size_t index) const;
 
     // Przeciążony operator +
     friend CTree operator+(const CTree& lhs, const CTree& rhs);

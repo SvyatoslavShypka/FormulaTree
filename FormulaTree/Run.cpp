@@ -1,64 +1,83 @@
-#include "CTree.h"
+#include <iostream>
+#include <vector>
+#include <map>
+#include <cmath>
+#include <sstream>
+#include <set>
 #include "CNode.h"
+#include "CTree.h"
+
 using namespace std;
 
-// Funkcja pomocnicza do wczytywania wartości zmiennych
-void readValues(const std::string& input, std::vector<double>& values) {
-    std::istringstream iss(input);
+// Funkcja do wczytywania wartości z stringstream
+void readValues(std::stringstream& ss, std::vector<double>& values) {
     double value;
-    while (iss >> value) {
+    while (ss >> value) {
         values.push_back(value);
     }
 }
 
 int main() {
-    CTree tree; // Tworzymy drzewo
+    CTree tree;
 
-    std::string command;
     while (true) {
-        std::cout << "Enter command: ";
-        std::getline(std::cin, command);
+        cout << "Enter command: ";
+        string command;
+        getline(cin, command);
 
-        std::istringstream iss(command);
-        std::string cmd;
-        iss >> cmd;
+        stringstream ss(command);
+        string cmd;
+        ss >> cmd;
 
-        if (cmd == "enter") {
-            std::string formula;
-            std::getline(iss, formula);
-            tree.parseExpression(formula);
-            std::cout << "Formula: ";
+        if (cmd == "comp") {
+            // Obsługa polecenia "comp"
+            // Odczytaj wartości i przypisz do odpowiednich zmiennych w drzewie
+
+            vector<double> values;
+            readValues(ss, values);
+
+            // Sprawdź, czy liczba wartości jest zgodna z ilością zmiennych w drzewie
+            if (values.size() != tree.numberOfVariablesInTree()) {
+                cout << "Error: Incorrect number of values provided for computation." << endl;
+            }
+            else {
+                // Stworzenie mapy zmiennych i ich wartości
+                map<string, double> variableValues;
+                for (size_t i = 0; i < values.size(); ++i) {
+                    variableValues[tree.getVariableNameAtIndex(i)] = values[i];
+                }
+
+                // Wywołanie funkcji evaluate na korzeniu drzewa
+                double result = tree.evaluate(tree.getRoot(), variableValues);
+
+                // Wyświetlenie wyniku
+                cout << "Result: " << result << endl;
+            }
+        }
+        else if (cmd == "print") {
+            // Obsługa polecenia "print"
+            std::cout << "Tree: ";
             tree.printTree(tree.getRoot());
             std::cout << std::endl;
         }
         else if (cmd == "vars") {
-            // Wypisz zmienne
-            // Implementacja zależy od struktury drzewa, można użyć zbioru (std::set) do przechowywania unikalnych zmiennych
-        }
-        else if (cmd == "print") {
-            // Wypisz drzewo w postaci prefiksowej
-            std::cout << "Printed tree: ";
-            tree.printTree(tree.getRoot());
+            // Obsługa polecenia "vars"
+            std::set<std::string> variables;
+            tree.collectVariables(tree.getRoot(), variables);
+            std::cout << "Variables: ";
+            for (const auto& variable : variables) {
+                std::cout << variable << " ";
+            }
             std::cout << std::endl;
         }
-        else if (cmd == "comp") {
-            std::vector<double> values;
-            readValues(command.substr(cmd.length()), values);
-
-            // Sprawdź, czy ilość wartości zgadza się z ilością zmiennych w drzewie
-            // Jeśli tak, oblicz wartość drzewa dla podanych wartości
-            // Wypisz wynik
-        }
-        else if (cmd == "join") {
-            std::string formula;
-            std::getline(iss, formula);
-
-            CTree newTree;
-            newTree.parseExpression(formula);
-            tree += newTree;
+        else if (cmd == "enter") {
+            string formula;
+            getline(ss, formula);
+            tree.parseExpression(formula);
+            cout << "Expression entered and parsed." << endl;
         }
         else {
-            std::cout << "Unknown command." << std::endl;
+            // Obsługa innych poleceń...
         }
     }
 

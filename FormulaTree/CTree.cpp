@@ -26,8 +26,9 @@ using namespace std;
 
         CNode* newNode = new CNode(value);
 
+        //TODO
         //Check for children (subexpressions)
-        while (offset < expression.size() && expression[offset] == ' ') {
+        while (offset < expression.size() && (expression[offset] == ' ' || value == "")) {
             offset++; // Skip space
             if (offset < expression.size()) {
                 newNode->children.push_back(parseNode(expression, offset));
@@ -84,7 +85,8 @@ using namespace std;
     }
 
     // Funkcja do obliczania wartości wyrażenia dla podanych wartości zmiennych
-    double CTree::evaluate(CNode* node, const map<string, double>& values) {
+    // Funkcja do obliczania wartości wyrażenia dla podanych wartości zmiennych
+    double CTree::evaluate(CNode* node, const std::map<std::string, double>& values) {
         if (node == nullptr) return 0.0;
 
         if (node->value == "+") {
@@ -130,4 +132,41 @@ using namespace std;
         CTree result;
         result.root = mergeTrees(lhs.getRoot(), rhs.getRoot());
         return result;
+    }
+
+    // Funkcja zwracająca liczbę zmiennych w drzewie
+    size_t CTree::numberOfVariablesInTree() const {
+        std::set<std::string> variables;
+        collectVariables(root, variables);
+        return variables.size();
+    }
+
+    // Funkcja pomocnicza do rekurencyjnego zbierania unikalnych zmiennych
+    void CTree::collectVariables(const CNode* node, std::set<std::string>& variables) const {
+        if (!node) return;
+
+        if (node->isVariable()) {
+            variables.insert(node->value);
+        }
+
+        for (const auto& child : node->children) {
+            collectVariables(child, variables);
+        }
+    }
+
+    // Funkcja zwracająca nazwę zmiennej na podstawie indeksu
+    std::string CTree::getVariableNameAtIndex(size_t index) const {
+        std::set<std::string> variables;
+        collectVariables(root, variables);
+
+        if (index < variables.size()) {
+            auto it = std::next(variables.begin(), index);
+            return *it;
+        }
+        else {
+            // Możesz obsłużyć błąd lub rzucić wyjątek w przypadku nieprawidłowego indeksu
+            // W przykładzie używam prostego komunikatu błędu
+            std::cerr << "Error: Index out of range." << std::endl;
+            return "";
+        }
     }
