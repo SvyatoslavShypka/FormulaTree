@@ -1,21 +1,14 @@
 #pragma once
 
 #include <string>
-#include <vector>
-using namespace std;
 
 class CNode {
-    //TODO put Getters/Setters
-    //private:
-
 public:
-    string value;
-    vector<CNode*> children;
-    CNode(string val);
-    //~CNode();
+    std::string value;
+    CNode* left;
+    CNode* right;
 
-
-    // Przeciążony operator + dla łatwego łączenia drzew
+    CNode(std::string val);
     CNode* operator+(CNode* other);
     bool isVariable() const;
 };

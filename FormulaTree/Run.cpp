@@ -49,7 +49,7 @@ int main() {
 
                 // Wywołanie funkcji evaluate na korzeniu drzewa
                 double result = tree.evaluate(
-                        tree.getRoot(), variableValues);
+                    tree.getRoot(), variableValues);
 
                 // Wyświetlenie wyniku
                 cout << "Result: " << result << endl;

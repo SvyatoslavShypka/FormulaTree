@@ -1,60 +1,35 @@
 #pragma once
 
 #include <iostream>
-#include <vector>
 #include <map>
-#include <cmath>
-#include <sstream>
 #include <set>
-#include "CNode.h"
-using namespace std;
 
+class CNode;
 
 class CTree {
 private:
     CNode* root;
 
-    // Funkcja do usuwania drzewa
     void deleteTree(CNode* node);
-
-    // Funkcja pomocnicza do parsowania wyrażenia
-    CNode* parseNode(const string& expression, size_t& offset);
+    CNode* parseNode(const std::string& expression, size_t& offset);
+    CNode* copyTree(const CNode* source);
 
 public:
-    // Konstruktor
     CTree();
-
-    // Destruktor
     ~CTree();
 
-    //Getters:
     CNode* getRoot() const;
 
-    // Przeciążony operator przypisania
     CTree& operator=(const CTree& other);
 
-    // Funkcja do kopiowania drzewa
-    void copyTree(CNode* dest, const CNode* source);
-
-    // Funkcja do wypisywania drzewa w notacji prefiksowej
     void printTree(CNode* node);
+    double evaluate(CNode* node, const std::map<std::string, double>& values);
+    void parseExpression(const std::string& expression);
 
-    // Funkcja do obliczania wartości wyrażenia dla podanych wartości zmiennych
-    double evaluate(CNode* node, const map<std::string, double>& values);
-
-    // Funkcja parsująca wyrażenie z notacji prefiksowej
-    void parseExpression(const string& expression);
-
-    // Przeciążony operator +=
     CTree& operator+=(const CTree& other);
+    //friend CTree operator+(const CTree& lhs, const CTree& rhs);
 
-    // Funkcja zwracająca liczbę zmiennych w drzewie
     size_t numberOfVariablesInTree() const;
-
-    void collectVariables(const CNode* node, set<std::string>& variables) const;
-
-    string getVariableNameAtIndex(size_t index) const;
-
-    // Przeciążony operator +
-    friend CTree operator+(const CTree& lhs, const CTree& rhs);
+    void collectVariables(const CNode* node, std::set<std::string>& variables) const;
+    std::string getVariableNameAtIndex(size_t index) const;
 };
