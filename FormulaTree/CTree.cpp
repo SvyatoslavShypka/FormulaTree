@@ -1,5 +1,6 @@
 #include "CTree.h"
 #include "CNode.h"
+using namespace std;
 
 CTree::CTree() : root(nullptr) {}
 
@@ -22,7 +23,7 @@ CTree& CTree::operator=(const CTree& other) {
 // Funkcja do wypisywania drzewa w notacji prefiksowej
 void CTree::printTree(CNode* node) {
     if (node != nullptr) {
-        std::cout << node->value << " ";
+        cout << node->value << " ";
         printTree(node->left);
         printTree(node->right);
     }
@@ -32,29 +33,17 @@ void CTree::printTree(CNode* node) {
 double CTree::evaluate(CNode* node, const std::map<std::string, double>& values) {
     if (node == nullptr) return 0.0;
 
-    if (node->isVariable()) {
-        if (values.find(node->value) != values.end()) {
-            return values.at(node->value);
-        }
-        else {
-            std::cerr << "Error: Variable " << node->value << " not found in provided values." << std::endl;
-            return 0.0;
-        }
+    if (node->value == "+") {
+        return evaluate(node->left, values) + evaluate(node->right, values);
+    }
+    else if (node->value == "sin") {
+        return sin(evaluate(node->left, values));
+    }
+    else if (values.find(node->value) != values.end()) {
+        return values.at(node->value);
     }
     else {
-        double leftValue = evaluate(node->left, values);
-        double rightValue = evaluate(node->right, values);
-
-        if (node->value == "+") {
-            return leftValue + rightValue;
-        }
-        else if (node->value == "sin") {
-            return sin(leftValue);
-        }
-        else {
-            std::cerr << "Error: Unsupported operator " << node->value << std::endl;
-            return 0.0;
-        }
+        return stod(node->value);
     }
 }
 
@@ -86,6 +75,8 @@ void CTree::deleteTree(CNode* node) {
     }
 }
 
+
+
 CNode* CTree::parseNode(const std::string& expression, size_t& offset) {
     std::string value;
     while (offset < expression.size() && expression[offset] != ' ') {
@@ -102,18 +93,28 @@ CNode* CTree::parseNode(const std::string& expression, size_t& offset) {
             CNode* childNode = parseNode(expression, offset);
             std::cout << "Adding child with value: " << childNode->value << " to parent with value: " << newNode->value << std::endl;
 
-            // Ustaw lewe i prawe dziecko odpowiednio
-            if (!newNode->left) {
+            if (newNode->left == nullptr) {
                 newNode->left = childNode;
             }
-            else {
+            else if (newNode->right == nullptr) {
                 newNode->right = childNode;
+            }
+            else {
+                // If both left and right are already set, create a new parent node
+                CNode* newParent = new CNode("+");
+                newParent->left = newNode;
+                newParent->right = childNode;
+                newNode = newParent;
             }
         }
     }
 
     return newNode;
 }
+
+
+
+
 
 
 // Funkcja zwracająca liczbę zmiennych w drzewie
@@ -123,7 +124,7 @@ size_t CTree::numberOfVariablesInTree() const {
     return variables.size();
 }
 
-// Funkcja pomocnicza do rekurencyjnego zbierania unikalnych zmiennych
+/// Funkcja pomocnicza do rekurencyjnego zbierania unikalnych zmiennych
 void CTree::collectVariables(const CNode* node, std::set<std::string>& variables) const {
     if (!node) return;
 
@@ -133,12 +134,8 @@ void CTree::collectVariables(const CNode* node, std::set<std::string>& variables
 
     collectVariables(node->left, variables);
     collectVariables(node->right, variables);
-
-    // Include operators as variables
-    if (!node->isVariable()) {
-        variables.insert(node->value);
-    }
 }
+
 
 
 // Funkcja zwracająca nazwę zmiennej na podstawie indeksu
@@ -159,13 +156,13 @@ std::string CTree::getVariableNameAtIndex(size_t index) const {
 }
 
 // Funkcja pomocnicza do łączenia dwóch drzew
-CNode* mergeTrees(const CNode* root1, const CNode* root2) {
-    if (!root1) return new CNode(root2->value);
-    if (!root2) return new CNode(root1->value);
+CNode* mergeTrees(const CNode* left, const CNode* right) {
+    if (!left) return new CNode(right->value);
+    if (!right) return new CNode(left->value);
 
-    CNode* newRoot = new CNode(root1->value);
-    newRoot->left = mergeTrees(root1->left, root2->left);
-    newRoot->right = mergeTrees(root1->right, root2->right);
+    CNode* newRoot = new CNode(left->value);
+    newRoot->left = mergeTrees(left->left, right->left);
+    newRoot->right = mergeTrees(left->right, right->right);
 
     return newRoot;
 }
