@@ -25,13 +25,15 @@ using namespace std;
         }
 
         CNode* newNode = new CNode(value);
+        cout << "Created node with value: " << value << endl;
 
-        //TODO
-        //Check for children (subexpressions)
-        while (offset < expression.size() && (expression[offset] == ' ' || value == "")) {
+        // Check for children (subexpressions)
+        while (offset < expression.size() && expression[offset] == ' ') {
             offset++; // Skip space
             if (offset < expression.size()) {
-                newNode->children.push_back(parseNode(expression, offset));
+                CNode* childNode = parseNode(expression, offset);
+                cout << "Adding child with value: " << childNode->value << " to parent with value: " << newNode->value << endl;
+                newNode->children.insert(newNode->children.begin(), childNode);
             }
         }
 
@@ -107,6 +109,10 @@ using namespace std;
     void CTree::parseExpression(const string& expression) {
         size_t offset = 0;
         root = parseNode(expression, offset);
+        cout << root->value << endl;
+        cout << root->children.size() << endl;
+        //cout << root->value << endl;
+
     }
 
     // Funkcja pomocnicza do łączenia dwóch drzew
@@ -143,16 +149,22 @@ using namespace std;
 
     // Funkcja pomocnicza do rekurencyjnego zbierania unikalnych zmiennych
     void CTree::collectVariables(const CNode* node, std::set<std::string>& variables) const {
-        if (!node) return;
+    if (!node) return;
 
-        if (node->isVariable()) {
-            variables.insert(node->value);
-        }
-
-        for (const auto& child : node->children) {
-            collectVariables(child, variables);
-        }
+    if (node->isVariable()) {
+        variables.insert(node->value);
     }
+
+    for (const auto& child : node->children) {
+        collectVariables(child, variables);
+    }
+
+    // Include operators as variables
+    if (!node->isVariable()) {
+        variables.insert(node->value);
+    }
+}
+
 
     // Funkcja zwracająca nazwę zmiennej na podstawie indeksu
     std::string CTree::getVariableNameAtIndex(size_t index) const {
