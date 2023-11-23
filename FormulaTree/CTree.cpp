@@ -79,7 +79,19 @@ double CTree::evaluate(CNode* node, const std::map<std::string, double>& values)
     if (node->value == "+") {
         return evaluate(node->left, values) + evaluate(node->right, values);
     }
+    else if (node->value == "*") {
+        return evaluate(node->left, values) * evaluate(node->right, values);
+    }
+    else if (node->value == "-") {
+        return evaluate(node->left, values) - evaluate(node->right, values);
+    }
+    else if (node->value == "/") {
+        return evaluate(node->left, values) / evaluate(node->right, values);
+    }
     else if (node->value == "sin") {
+        return sin(evaluate(node->left, values));
+    }
+    else if (node->value == "cos") {
         return sin(evaluate(node->left, values));
     }
     else if (values.find(node->value) != values.end()) {
