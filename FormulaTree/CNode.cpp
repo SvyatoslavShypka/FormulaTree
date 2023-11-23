@@ -1,4 +1,7 @@
 #include "CNode.h"
+#include <iostream>
+
+using namespace std;
 
 CNode::CNode(std::string val) : value(val), left(nullptr), right(nullptr) {}
 
@@ -11,7 +14,9 @@ CNode* CNode::operator+(CNode* other) {
 
 
 bool CNode::isVariable() const {
-    if (value.empty() || !isalpha(value[0] || isSin() || isCos())) {
+    if (value.empty() || !isalpha(value[0]) || isSin() || isCos()) {
+        cout << value[0] << endl;
+        cout << !isalpha(value[0]) << endl;
         return false;
     }
 

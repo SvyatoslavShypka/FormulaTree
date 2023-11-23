@@ -86,19 +86,26 @@ CNode* CTree::parseNode(const std::string& expression, size_t& offset) {
     int leftWords = 0;
     
     string value;
+    int saveOffset;
+    //size_t& zero_offset = offset;
     while (offset < expression.size()) {
         std::string value2;
-        while (offset < expression.size() -1 && expression[offset] == ' ') {
+        while (offset < expression.size() - 1 && expression[offset] == ' ') {
             offset++; // Skip space
         }
-        int zero_offset = offset;
+        saveOffset = offset;
         //Collect value until next space
-        while (zero_offset < expression.size() && expression[zero_offset] != ' ') {
-            value2 += expression[zero_offset++];
+        while (offset < expression.size() && expression[offset] != ' ') {
+            value2 += expression[offset++];
         }
         leftWords++;
         cout << value2 << " - " << to_string(leftWords) << endl;
     }
+    offset = 1; //TODO change it
+    while (offset < expression.size() && expression[offset] != ' ') {
+        value += expression[offset++];
+    }
+
     if (leftWords == 0) {
         cout << "incorrect input" << endl;
         return nullptr;
@@ -140,44 +147,45 @@ CNode* CTree::parseNode(const std::string& expression, size_t& offset) {
     return root;
 }
 
-void createTree(CNode* currentNode, const string& expression, size_t& offset, int leftWords) {
+void CTree::createTree(CNode* currentNode, const string& expression, size_t& offset, int leftWords) {
     //finish recursion
-    if (currentNode == nullptr || leftWords == 0) { 
-        return; 
-    }
-
-    if (currentNode->isNumber() || currentNode->isVariable()) {
+    if (currentNode == nullptr || leftWords == 0) {
         return;
     }
 
-    string value;
-    while (offset < expression.size() - 1 && expression[offset] == ' ') {
-        offset++; // Skip space
-    }
-    //Collect value until next space
-    while (offset < expression.size() && expression[offset] != ' ') {
-        value += expression[offset++];
-    }
-
-    CNode* newNode = new CNode(value);
-    leftWords--;
     if (currentNode->isVariable() || currentNode->isNumber()) {
-        cout << "incorrect input! There are already two childs. To be corrected: " << endl;
         return;
     }
-    else {
-        if (currentNode->left == nullptr) {
-            currentNode->left = newNode;
-            createTree(currentNode->left, expression, offset, leftWords);
+
+    while (offset < expression.size()) {
+        string value;
+        while (offset < expression.size() && expression[offset] == ' ') {
+            offset++; // Skip space
         }
-        else if (currentNode->right == nullptr) {
-            currentNode->right = newNode;
-            createTree(currentNode->right, expression, offset, leftWords);
+        //Collect value until next space
+        while (offset < expression.size() && expression[offset] != ' ') {
+            value += expression[offset++];
+        }
+        CNode* newNode = new CNode(value);
+        leftWords--;
+        if (currentNode->isVariable() || currentNode->isNumber()) {
+            cout << "incorrect input! There are already two childs. To be corrected: " << endl;
+            return;
         }
         else {
-            cout << "incorrect input! There are already two childs. To be corrected: " << endl;
-        }
+            if (currentNode->left == nullptr) {
+                currentNode->left = newNode;
+                createTree(currentNode->left, expression, offset, leftWords);
+            }
+            else if (currentNode->right == nullptr) {
+                currentNode->right = newNode;
+                createTree(currentNode->right, expression, offset, leftWords);
+            }
+            else {
+                cout << "incorrect input! There are already two childs. To be corrected: " << endl;
+            }
     }
+}
 
 }
 
