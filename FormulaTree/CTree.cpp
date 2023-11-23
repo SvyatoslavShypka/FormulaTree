@@ -1,5 +1,9 @@
 #include "CTree.h"
 #include "CNode.h"
+#include <iostream> 
+#include <string> 
+#include <vector> 
+#include <sstream>
 using namespace std;
 
 CTree::CTree() : root(nullptr) {}
@@ -78,35 +82,33 @@ void CTree::deleteTree(CNode* node) {
 
 
 CNode* CTree::parseNode(const std::string& expression, size_t& offset) {
-    std::string value;
-    while (offset < expression.size() -1 && expression[offset] == ' ') {
-        offset++; // Skip space
+    stringstream ss(expression);
+    int words = 0;
+    
+    string value;
+    while (offset < expression.size()) {
+        std::string value2;
+        while (offset < expression.size() -1 && expression[offset] == ' ') {
+            offset++; // Skip space
+        }
+        int zero_offset;
+        //Collect value until next space
+        while (zero_offset < expression.size() && expression[zero_offset] != ' ') {
+            value2 += expression[zero_offset++];
+        }
+        words++;
+        cout << value2 << " - " << to_string(words) << endl;
     }
-    //Collect value until next space
-    while (offset < expression.size() && expression[offset] != ' ') {
-        value += expression[offset++];
-    }
-
-    if (value == "") {
+    if (words == 0) {
         return nullptr;
     }
     CNode* newNode = new CNode(value);
-    if (newNode->isVariable() || newNode->isNumber()) {
-        return newNode;
+    if (root == nullptr) {
+        root = newNode;
     }
-    else if (newNode->isCos() || newNode->isSin() || newNode->isOperator()) {
-        CNode* leftChild = parseNode(expression, offset);
-        newNode->left = leftChild;
+    createTree(root, expression, offset);
 
-        if (newNode->isOperator()) {
-            CNode* rightChild = parseNode(expression, offset);
-            newNode->right = rightChild;
-        }
-    }
-    else {
-        cout << "incorrect input! To be corrected: " << endl;
-    }
-    //std::cout << "Created node with value: " << value << std::endl;
+    std::cout << "Created node with value: " << value << std::endl;
 
     //// Check for children (subexpressions)
     //while (offset < expression.size() && expression[offset] == ' ') {
@@ -137,6 +139,45 @@ CNode* CTree::parseNode(const std::string& expression, size_t& offset) {
     return newNode;
 }
 
+void createTree(CNode* currentNode, const string& expression, size_t& offset) {
+    //finish recursion
+    if (currentNode == nullptr) { 
+        return; 
+    }
+
+    if (currentNode->isNumber() || currentNode->isVariable()) {
+        return;
+    }
+
+    string value;
+    while (offset < expression.size() - 1 && expression[offset] == ' ') {
+        offset++; // Skip space
+    }
+    //Collect value until next space
+    while (offset < expression.size() && expression[offset] != ' ') {
+        value += expression[offset++];
+    }
+
+    CNode* newNode = new CNode(value);
+    if (newNode->isVariable() || newNode->isNumber()) {
+        return;
+    }
+    else if (newNode->isCos() || newNode->isSin() || newNode->isOperator()) {
+        //CNode* leftChild = createTree(newNode, expression, offset);
+        //newNode->left = leftChild;
+
+        if (newNode->isOperator()) {
+            //CNode* rightChild = parseNode(expression, offset);
+            //newNode->right = rightChild;
+        }
+    }
+    else {
+        cout << "incorrect input! To be corrected: " << endl;
+    }
+
+    createTree(currentNode->left, expression, offset);
+    createTree(currentNode->right, expression, offset);
+}
 
 // Funkcja zwracająca liczbę zmiennych w drzewie
 size_t CTree::numberOfVariablesInTree() const {
