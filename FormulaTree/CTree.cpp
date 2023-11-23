@@ -82,8 +82,8 @@ void CTree::deleteTree(CNode* node) {
 
 
 CNode* CTree::parseNode(const std::string& expression, size_t& offset) {
-    stringstream ss(expression);
-    int words = 0;
+    //stringstream ss(expression);
+    int leftWords = 0;
     
     string value;
     while (offset < expression.size()) {
@@ -91,24 +91,25 @@ CNode* CTree::parseNode(const std::string& expression, size_t& offset) {
         while (offset < expression.size() -1 && expression[offset] == ' ') {
             offset++; // Skip space
         }
-        int zero_offset;
+        int zero_offset = offset;
         //Collect value until next space
         while (zero_offset < expression.size() && expression[zero_offset] != ' ') {
             value2 += expression[zero_offset++];
         }
-        words++;
-        cout << value2 << " - " << to_string(words) << endl;
+        leftWords++;
+        cout << value2 << " - " << to_string(leftWords) << endl;
     }
-    if (words == 0) {
+    if (leftWords == 0) {
+        cout << "incorrect input" << endl;
         return nullptr;
     }
-    CNode* newNode = new CNode(value);
+    //CNode* newNode = new CNode(value);
     if (root == nullptr) {
-        root = newNode;
+        root = new CNode(value);
+        leftWords--;
+        cout << "Created node with value: " << value << std::endl;
     }
-    createTree(root, expression, offset);
-
-    std::cout << "Created node with value: " << value << std::endl;
+    createTree(root, expression, offset, leftWords);
 
     //// Check for children (subexpressions)
     //while (offset < expression.size() && expression[offset] == ' ') {
@@ -136,12 +137,12 @@ CNode* CTree::parseNode(const std::string& expression, size_t& offset) {
     //    }
     //}
 
-    return newNode;
+    return root;
 }
 
-void createTree(CNode* currentNode, const string& expression, size_t& offset) {
+void createTree(CNode* currentNode, const string& expression, size_t& offset, int leftWords) {
     //finish recursion
-    if (currentNode == nullptr) { 
+    if (currentNode == nullptr || leftWords == 0) { 
         return; 
     }
 
@@ -159,8 +160,15 @@ void createTree(CNode* currentNode, const string& expression, size_t& offset) {
     }
 
     CNode* newNode = new CNode(value);
+    leftWords--;
     if (newNode->isVariable() || newNode->isNumber()) {
-        return;
+        if (currentNode->left == nullptr) {
+            currentNode->left = newNode;
+            return;
+        }
+        else {
+
+        }
     }
     else if (newNode->isCos() || newNode->isSin() || newNode->isOperator()) {
         //CNode* leftChild = createTree(newNode, expression, offset);
