@@ -79,42 +79,63 @@ void CTree::deleteTree(CNode* node) {
 
 CNode* CTree::parseNode(const std::string& expression, size_t& offset) {
     std::string value;
+    while (offset < expression.size() -1 && expression[offset] == ' ') {
+        offset++; // Skip space
+    }
+    //Collect value until next space
     while (offset < expression.size() && expression[offset] != ' ') {
         value += expression[offset++];
     }
 
+    if (value == "") {
+        return nullptr;
+    }
     CNode* newNode = new CNode(value);
-    std::cout << "Created node with value: " << value << std::endl;
+    if (newNode->isVariable() || newNode->isNumber()) {
+        return newNode;
+    }
+    else if (newNode->isCos() || newNode->isSin() || newNode->isOperator()) {
+        CNode* leftChild = parseNode(expression, offset);
+        newNode->left = leftChild;
 
-    // Check for children (subexpressions)
-    while (offset < expression.size() && expression[offset] == ' ') {
-        offset++; // Skip space
-        if (offset < expression.size()) {
-            CNode* childNode = parseNode(expression, offset);
-            std::cout << "Adding child with value: " << childNode->value << " to parent with value: " << newNode->value << std::endl;
-
-            if (newNode->left == nullptr) {
-                newNode->left = childNode;
-            }
-            else if (newNode->right == nullptr) {
-                newNode->right = childNode;
-            }
-            else {
-                // If both left and right are already set, create a new parent node
-                CNode* newParent = new CNode("+");
-                newParent->left = newNode;
-                newParent->right = childNode;
-                newNode = newParent;
-            }
+        if (newNode->isOperator()) {
+            CNode* rightChild = parseNode(expression, offset);
+            newNode->right = rightChild;
         }
     }
+    else {
+        cout << "incorrect input! To be corrected: " << endl;
+    }
+    //std::cout << "Created node with value: " << value << std::endl;
+
+    //// Check for children (subexpressions)
+    //while (offset < expression.size() && expression[offset] == ' ') {
+    //    offset++; // Skip space
+    //    if (offset < expression.size()) {
+    //        CNode* childNode = parseNode(expression, offset);
+    //        std::cout << "Adding child with value: " << childNode->value << " to parent with value: " << newNode->value << std::endl;
+
+    //        if (newNode->value == "+" || newNode->value == "-" || newNode->value == "*" || newNode->value == "/") {
+
+    //            if (newNode->left == nullptr) {
+    //                newNode->left = childNode;
+    //            }
+    //            else if (newNode->right == nullptr) {
+    //                newNode->right = childNode;
+    //            }
+    //            else {
+    //                // If both left and right are already set, create a new parent node
+    //                CNode* newParent = new CNode("+");
+    //                newParent->left = newNode;
+    //                newParent->right = childNode;
+    //                newNode = newParent;
+    //            }
+    //        }
+    //    }
+    //}
 
     return newNode;
 }
-
-
-
-
 
 
 // Funkcja zwracająca liczbę zmiennych w drzewie
@@ -135,7 +156,6 @@ void CTree::collectVariables(const CNode* node, std::set<std::string>& variables
     collectVariables(node->left, variables);
     collectVariables(node->right, variables);
 }
-
 
 
 // Funkcja zwracająca nazwę zmiennej na podstawie indeksu
