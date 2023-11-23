@@ -15,5 +15,4 @@ public:
     bool isOperator() const;
     bool isSin() const;
     bool isCos() const;
-    bool isOccupied() const;
 };

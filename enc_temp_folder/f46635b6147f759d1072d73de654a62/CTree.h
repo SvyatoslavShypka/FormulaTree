@@ -10,7 +10,6 @@ class CNode;
 class CTree {
 private:
     CNode* root;
-    CNode* previous;
 
     void deleteTree(CNode* node);
     CNode* parseNode(const std::string& expression, size_t& offset);

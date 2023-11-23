@@ -130,7 +130,7 @@ void CTree::createTree(CNode* currentNode, const string& expression, size_t& off
     if (currentNode->isVariable() || currentNode->isNumber()) {
         return;
     }
-    
+
     while (offset < expression.size()) {
         string value;
         while (offset < expression.size() && expression[offset] == ' ') {
@@ -150,9 +150,6 @@ void CTree::createTree(CNode* currentNode, const string& expression, size_t& off
             if (currentNode->left == nullptr) {
                 currentNode->left = newNode;
                 createTree(currentNode->left, expression, offset, leftWords);
-                if (currentNode->isCos() || currentNode->isSin()) {
-
-                }
             }
             else if (currentNode->right == nullptr) {
                 currentNode->right = newNode;

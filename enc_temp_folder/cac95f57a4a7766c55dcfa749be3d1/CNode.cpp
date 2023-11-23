@@ -55,21 +55,3 @@ bool CNode::isCos() const {
     }
     return false;
 }
-
-bool CNode::isOccupied() const {
-    if (isNumber() || isVariable()) {
-        return true;
-    }
-
-    if (left == NULL) {
-        return false;
-    }
-    if ((isSin() || isCos()) && left != NULL) {
-        return true;
-    }
-
-    if (left != NULL && right != NULL) {
-        return true;
-    }
-    return false;;
-}
