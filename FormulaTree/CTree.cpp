@@ -161,30 +161,24 @@ void createTree(CNode* currentNode, const string& expression, size_t& offset, in
 
     CNode* newNode = new CNode(value);
     leftWords--;
-    if (newNode->isVariable() || newNode->isNumber()) {
-        if (currentNode->left == nullptr) {
-            currentNode->left = newNode;
-            return;
-        }
-        else {
-
-        }
-    }
-    else if (newNode->isCos() || newNode->isSin() || newNode->isOperator()) {
-        //CNode* leftChild = createTree(newNode, expression, offset);
-        //newNode->left = leftChild;
-
-        if (newNode->isOperator()) {
-            //CNode* rightChild = parseNode(expression, offset);
-            //newNode->right = rightChild;
-        }
+    if (currentNode->isVariable() || currentNode->isNumber()) {
+        cout << "incorrect input! There are already two childs. To be corrected: " << endl;
+        return;
     }
     else {
-        cout << "incorrect input! To be corrected: " << endl;
+        if (currentNode->left == nullptr) {
+            currentNode->left = newNode;
+            createTree(currentNode->left, expression, offset, leftWords);
+        }
+        else if (currentNode->right == nullptr) {
+            currentNode->right = newNode;
+            createTree(currentNode->right, expression, offset, leftWords);
+        }
+        else {
+            cout << "incorrect input! There are already two childs. To be corrected: " << endl;
+        }
     }
 
-    createTree(currentNode->left, expression, offset);
-    createTree(currentNode->right, expression, offset);
 }
 
 // Funkcja zwracająca liczbę zmiennych w drzewie
