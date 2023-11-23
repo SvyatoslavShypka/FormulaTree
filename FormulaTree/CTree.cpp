@@ -6,7 +6,11 @@
 #include <sstream>
 using namespace std;
 
-CTree::CTree() : root(nullptr) {}
+CTree::CTree()
+{
+    root = nullptr;
+}
+
 
 CTree::~CTree() {
     deleteTree(root);
@@ -32,43 +36,6 @@ void CTree::printTree(CNode* node) {
         std::cout << (node->right ? "Right is: " + node->right->value : "Right is null") << std::endl;
         printTree(node->left);
         printTree(node->right);
-    }
-}
-
-// Funkcja do wyrysowania drzewa
-void CTree::drawTree(CNode* node, int offset) {
-    int center = 50;
-    if (node != nullptr) {
-        if (node == root) {
-            offset = 0;
-            cout << string(center, ' ') << node->value << endl;
-        }
-        offset += 10;
-        cout << string(center - offset, ' ') << node->left->value << string(2 * offset, ' ') << node->right->value;
-
-        drawTree(node->left, offset);
-        drawTree(node->right, offset);
-    }
-    else {
-        return;
-    }
-}
-
-// Funkcja do wyrysowania drzewa
-void CTree::detailTree(CNode* node, int count) {
-    if (node != nullptr) {
-            cout << count << "                       " << node->value << endl;
-            cout << node->left->value << "-------------" << node->right->value << endl;
-            count++;
-            if (node->left != NULL) {
-                detailTree(node->left, count);
-            }
-            if (node->right != NULL) {
-                detailTree(node->right, count);
-            }
-    }
-    else {
-        return;
     }
 }
 
@@ -128,8 +95,6 @@ void CTree::deleteTree(CNode* node) {
     }
 }
 
-
-
 CNode* CTree::parseNode(const std::string& expression, size_t& offset) {
     //stringstream ss(expression);
     int leftWords = 0;
@@ -187,7 +152,7 @@ void CTree::createTree(CNode* currentNode, const string& expression, size_t& off
     while (offset < expression.size()) {
         string value;
         while (offset < expression.size() && expression[offset] == ' ') {
-            offset++; // Skip space
+            offset++; // Skip spaces
         }
         //Collect value until next space
         while (offset < expression.size() && expression[offset] != ' ') {

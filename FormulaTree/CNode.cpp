@@ -1,9 +1,14 @@
 #include "CNode.h"
-#include <iostream>
+//#include <iostream>
 
 using namespace std;
 
-CNode::CNode(std::string val) : value(val), left(nullptr), right(nullptr) {}
+CNode::CNode(std::string val)
+{
+    value = val;
+    left = nullptr;
+    right = nullptr;
+}
 
 CNode* CNode::operator+(CNode* other) {
     CNode* newNode = new CNode("+");
@@ -41,21 +46,21 @@ bool CNode::isOperator() const {
 
     return false;
 }
-
+//TODO make isSinCos
 bool CNode::isSin() const {
     if (value == "sin") {
         return true;
     }
     return false;
 }
-
+//TODO to delete
 bool CNode::isCos() const {
     if (value == "cos") {
         return true;
     }
     return false;
 }
-
+//TODO to delete if isClosed enough
 bool CNode::isOccupied() const {
     if (isNumber() || isVariable()) {
         return true;

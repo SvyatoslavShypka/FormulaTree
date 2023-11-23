@@ -54,7 +54,7 @@ int main() {
                 // Wyświetlenie wyniku
                 cout << "Result: " << result << endl;
             }
-        }
+        } //TODO make print easy: repeat the formula
         else if (cmd == "print") {
             // Obsługa polecenia "print"
             std::cout << "Tree: ";
@@ -77,9 +77,9 @@ int main() {
             tree.parseExpression(formula);
             cout << "Expression entered and parsed." << endl;
         }
-        else if (cmd == "det") {
-            cout << "Tree:" << endl;
-            tree.detailTree(tree.getRoot(), 0);
+        else if (cmd == "del") {
+            tree.deleteTree(tree.getRoot());
+            cout << "Tree was deleted" << endl;
         }
         else if (cmd == "exit") {
             cout << "Exit" << endl;
