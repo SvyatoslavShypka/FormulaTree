@@ -81,7 +81,11 @@ int main() {
             cout << "Tree:" << endl;
             tree.detailTree(tree.getRoot(), 0);
         }
-        else {
+        else if (cmd == "exit") {
+            cout << "Exit" << endl;
+            return 0;
+        }
+        else { //TODO Delete Tree
             // Obsługa innych poleceń...
         }
     }
