@@ -33,6 +33,25 @@ void CTree::printTree(CNode* node) {
     }
 }
 
+// Funkcja do wyrysowania drzewa
+void CTree::drawTree(CNode* node, int offset) {
+    int center = 50;
+    if (node != nullptr) {
+        if (node == root) {
+            offset = 0;
+            cout << string(offset, ' ') << node->value << " ";
+        }
+        offset += 10;
+        cout << string(center - offset, ' ') << node->left->value << string(2 * offset, ' ') << node->right->value;
+
+        drawTree(node->left, offset);
+        drawTree(node->right, offset);
+    }
+    else {
+        return;
+    }
+}
+
 // Funkcja do obliczania wartości wyrażenia dla podanych wartości zmiennych
 double CTree::evaluate(CNode* node, const std::map<std::string, double>& values) {
     if (node == nullptr) return 0.0;
@@ -126,8 +145,12 @@ void CTree::createTree(CNode* currentNode, const string& expression, size_t& off
     if (currentNode == nullptr || leftWords == 0) {
         return;
     }
+    while (currentNode->isClosed) {
+        currentNode = currentNode->previous;
+    }
 
     if (currentNode->isVariable() || currentNode->isNumber()) {
+        currentNode->isClosed = true;
         return;
     }
     
@@ -141,6 +164,7 @@ void CTree::createTree(CNode* currentNode, const string& expression, size_t& off
             value += expression[offset++];
         }
         CNode* newNode = new CNode(value);
+        newNode->previous = currentNode;
         leftWords--;
         if (currentNode->isVariable() || currentNode->isNumber()) {
             cout << "incorrect input! There are already two childs. To be corrected: " << endl;
@@ -149,13 +173,14 @@ void CTree::createTree(CNode* currentNode, const string& expression, size_t& off
         else {
             if (currentNode->left == nullptr) {
                 currentNode->left = newNode;
-                createTree(currentNode->left, expression, offset, leftWords);
                 if (currentNode->isCos() || currentNode->isSin()) {
-
+                    currentNode->isClosed = true;
                 }
+                createTree(currentNode->left, expression, offset, leftWords);
             }
             else if (currentNode->right == nullptr) {
                 currentNode->right = newNode;
+                currentNode->isClosed = true;
                 createTree(currentNode->right, expression, offset, leftWords);
             }
             else {

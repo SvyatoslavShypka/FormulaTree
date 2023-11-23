@@ -7,6 +7,8 @@ public:
     std::string value;
     CNode* left;
     CNode* right;
+    CNode* previous;
+    bool isClosed;
 
     CNode(std::string val);
     CNode* operator+(CNode* other);
