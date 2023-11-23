@@ -77,6 +77,10 @@ int main() {
             tree.parseExpression(formula);
             cout << "Expression entered and parsed." << endl;
         }
+        else if (cmd == "det") {
+            cout << "Tree:" << endl;
+            tree.detailTree(tree.getRoot(), 0);
+        }
         else {
             // Obsługa innych poleceń...
         }

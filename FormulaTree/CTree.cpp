@@ -27,7 +27,9 @@ CTree& CTree::operator=(const CTree& other) {
 // Funkcja do wypisywania drzewa w notacji prefiksowej
 void CTree::printTree(CNode* node) {
     if (node != nullptr) {
-        cout << node->value << " ";
+        std::cout << node->value << std::endl;
+        std::cout << (node->left ? "Left is: " + node->left->value : "Left is null") << std::endl;
+        std::cout << (node->right ? "Right is: " + node->right->value : "Right is null") << std::endl;
         printTree(node->left);
         printTree(node->right);
     }
@@ -39,13 +41,31 @@ void CTree::drawTree(CNode* node, int offset) {
     if (node != nullptr) {
         if (node == root) {
             offset = 0;
-            cout << string(offset, ' ') << node->value << " ";
+            cout << string(center, ' ') << node->value << endl;
         }
         offset += 10;
         cout << string(center - offset, ' ') << node->left->value << string(2 * offset, ' ') << node->right->value;
 
         drawTree(node->left, offset);
         drawTree(node->right, offset);
+    }
+    else {
+        return;
+    }
+}
+
+// Funkcja do wyrysowania drzewa
+void CTree::detailTree(CNode* node, int count) {
+    if (node != nullptr) {
+            cout << count << "                       " << node->value << endl;
+            cout << node->left->value << "-------------" << node->right->value << endl;
+            count++;
+            if (node->left != NULL) {
+                detailTree(node->left, count);
+            }
+            if (node->right != NULL) {
+                detailTree(node->right, count);
+            }
     }
     else {
         return;
@@ -74,9 +94,7 @@ double CTree::evaluate(CNode* node, const std::map<std::string, double>& values)
 void CTree::parseExpression(const std::string& expression) {
     size_t offset = 0;
     root = parseNode(expression, offset);
-    std::cout << root->value << std::endl;
-    std::cout << (root->left ? "Left exists" : "Left is null") << std::endl;
-    std::cout << (root->right ? "Right exists" : "Right is null") << std::endl;
+    printTree(root);
 }
 
 CNode* CTree::copyTree(const CNode* source) {
@@ -151,9 +169,9 @@ void CTree::createTree(CNode* currentNode, const string& expression, size_t& off
 
     if (currentNode->isVariable() || currentNode->isNumber()) {
         currentNode->isClosed = true;
-        return;
+        currentNode = currentNode->previous;
     }
-    
+
     while (offset < expression.size()) {
         string value;
         while (offset < expression.size() && expression[offset] == ' ') {
@@ -164,14 +182,18 @@ void CTree::createTree(CNode* currentNode, const string& expression, size_t& off
             value += expression[offset++];
         }
         CNode* newNode = new CNode(value);
-        newNode->previous = currentNode;
+        while (currentNode->isClosed) {
+            currentNode = currentNode->previous;
+        }
         leftWords--;
         if (currentNode->isVariable() || currentNode->isNumber()) {
             cout << "incorrect input! There are already two childs. To be corrected: " << endl;
+            currentNode = currentNode->previous;
             return;
         }
         else {
             if (currentNode->left == nullptr) {
+                newNode->previous = currentNode;
                 currentNode->left = newNode;
                 if (currentNode->isCos() || currentNode->isSin()) {
                     currentNode->isClosed = true;
@@ -179,6 +201,7 @@ void CTree::createTree(CNode* currentNode, const string& expression, size_t& off
                 createTree(currentNode->left, expression, offset, leftWords);
             }
             else if (currentNode->right == nullptr) {
+                newNode->previous = currentNode;
                 currentNode->right = newNode;
                 currentNode->isClosed = true;
                 createTree(currentNode->right, expression, offset, leftWords);
@@ -186,9 +209,8 @@ void CTree::createTree(CNode* currentNode, const string& expression, size_t& off
             else {
                 cout << "incorrect input! There are already two childs. To be corrected: " << endl;
             }
+        }
     }
-}
-
 }
 
 // Funkcja zwracająca liczbę zmiennych w drzewie
