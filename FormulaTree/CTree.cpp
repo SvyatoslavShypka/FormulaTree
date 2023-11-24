@@ -4,7 +4,7 @@
 #include <string> 
 #include <vector> 
 #include <sstream>
-//TODO check #include and constants and memory leakage
+//TODO check #include and constants
 using namespace std;
 //TODO change nullptr on NULL
 CTree::CTree()
@@ -39,7 +39,6 @@ void CTree::printTree(CNode* node) {
                 printTree(node->children[i]);
             }
         }
-        //cout << " ";
     }
 }
 
@@ -86,13 +85,14 @@ double CTree::evaluate(CNode* node, const map<string, double>& values) {
     else if (node->value == "cos") {
         return cos(evaluate(node->children[0], values));
     }
-    if (node->value == "multioperator") {
-        double result = 0.0;
-        for (const auto& child : node->children) {
-            result += evaluate(child, values);
-        }
-        return result;
-    }
+    //TODO to delete
+    //if (node->value == "multioperator") {
+    //    double result = 0.0;
+    //    for (const auto& child : node->children) {
+    //        result += evaluate(child, values);
+    //    }
+    //    return result;
+    //}
     else if (values.find(node->value) != values.end()) {
         return values.at(node->value);
     }
@@ -134,6 +134,7 @@ void CTree::deleteTree(CNode* node) {
 
 CNode* CTree::parseNode(const string& expression, size_t& offset) {
     //stringstream ss(expression);
+    //TODO to delete all leftWords
     int leftWords = 0;
     
     string value;
@@ -186,7 +187,8 @@ void CTree::createTree(CNode* currentNode, const string& expression, size_t& off
         currentNode = currentNode->previous;
     }
 
-    if (currentNode->isOperator() && currentNode->children.size() == 2 && !currentNode->isMultiOperator()) {
+    //if (currentNode->isOperator() && currentNode->children.size() == 2 && !currentNode->isMultiOperator()) {
+    if (currentNode->isOperator() && currentNode->children.size() == 2) {
         currentNode->isClosed = true;
         currentNode = currentNode->previous;
     }
@@ -262,24 +264,31 @@ string CTree::getVariableNameAtIndex(size_t index) const {
 }
 
 // Funkcja pomocnicza do łączenia dwóch drzew
-CNode* mergeTrees(const CNode* left, const CNode* right) {
+CNode* CTree::mergeTrees(CNode* left, CNode* right) {
     if (!left) return new CNode(right->value);
     if (!right) return new CNode(left->value);
+    CNode* lastNode = left->findLastNode(left);
+    CNode* lastButOneNode = lastNode->previous;
+    delete lastNode;
+    lastButOneNode->children[lastButOneNode->children.size() - 1] = copyTree(right);
 
-    CNode* newRoot = new CNode(left->value);
+    //cout << "lastNode: " << lastNode->value << endl;
 
-    // Łączenie dzieci drzew
-    size_t leftSize = left->children.size();
-    size_t rightSize = right->children.size();
 
-    for (size_t i = 0; i < max(leftSize, rightSize); ++i) {
-        const CNode* leftChild = i < leftSize ? left->children[i] : nullptr;
-        const CNode* rightChild = i < rightSize ? right->children[i] : nullptr;
+    //CNode* newRoot = new CNode(left->value);
 
-        newRoot->children.push_back(mergeTrees(leftChild, rightChild));
-    }
+    //// Łączenie dzieci drzew
+    //size_t leftSize = left->children.size();
+    //size_t rightSize = right->children.size();
 
-    return newRoot;
+    //for (size_t i = 0; i < max(leftSize, rightSize); ++i) {
+    //    CNode* leftChild = i < leftSize ? left->children[i] : nullptr;
+    //    CNode* rightChild = i < rightSize ? right->children[i] : nullptr;
+
+    //    newRoot->children.push_back(mergeTrees(leftChild, rightChild));
+    //}
+
+    return left;
 }
 
 // Przeciążony operator +=
@@ -287,3 +296,4 @@ CTree& CTree::operator+=(const CTree& other) {
     root = mergeTrees(root, other.root);
     return *this;
 }
+

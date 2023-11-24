@@ -18,7 +18,9 @@ CNode* CNode::operator+(CNode* other) {
 }
 
 bool CNode::isVariable() const {
-    if (value.empty() || !isalpha(value[0]) || isSinCos() || isMultiOperator()) {
+    //TODO to delete
+    //if (value.empty() || !isalpha(value[0]) || isSinCos() || isMultiOperator()) {
+    if (value.empty() || !isalpha(value[0]) || isSinCos()) {
         return false;
     }
 
@@ -45,17 +47,26 @@ bool CNode::isOperator() const {
     }
     return false;
 }
+//TODO to delete
+//bool CNode::isMultiOperator() const {
+//    if (value == "multioperator") {
+//        return true;
+//    }
+//    return false;
+//}
 
-bool CNode::isMultiOperator() const {
-    if (value == "multioperator") {
-        return true;
-    }
-    return false;
-}
-//TODO make isSinCos
 bool CNode::isSinCos() const {
     if (value == "sin" || value == "cos") {
         return true;
     }
     return false;
+}
+
+CNode* CNode::findLastNode(CNode* node) const {
+    if (node) {
+        while (!node->children.empty()) {
+            node = node->children[node->children.size() - 1];
+        }
+    }
+    return node;
 }

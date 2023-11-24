@@ -16,6 +16,8 @@ public:
     bool isVariable() const;
     bool isNumber() const;
     bool isOperator() const;
-    bool isMultiOperator() const;
+    //TODO to delete
+    //bool isMultiOperator() const;
     bool isSinCos() const;
+    CNode* findLastNode(CNode* node) const;
 };

@@ -97,6 +97,14 @@ int main() {
             tree.deleteTree(tree.getRoot());
             cout << "Tree was deleted" << endl;
         }
+        else if (cmd == "join") {
+            CTree newTree;
+            string formula;
+            getline(ss, formula);
+            newTree.parseExpression(formula);
+            tree += newTree;
+            cout << "Tree was merged" << endl;
+        }
         else if (cmd == "exit") {
             cout << "Exit" << endl;
             return 0;
