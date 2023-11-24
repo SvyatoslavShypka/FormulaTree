@@ -4,13 +4,13 @@
 #include <string> 
 #include <vector> 
 #include <sstream>
+//TODO check #include and constants and memory leakage
 using namespace std;
-
+//TODO change nullptr on NULL
 CTree::CTree()
 {
     root = nullptr;
 }
-
 
 CTree::~CTree() {
     deleteTree(root);
