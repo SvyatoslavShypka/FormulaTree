@@ -10,7 +10,7 @@ CNode::CNode(string val)
 }
 
 CNode* CNode::operator+(CNode* other) {
-    CNode* newNode = new CNode("+");
+    CNode* newNode = new CNode(op_plus);
     newNode->children.push_back(this);
     newNode->children.push_back(other);
     return newNode;
@@ -39,14 +39,14 @@ bool CNode::isNumber() const {
 }
 
 bool CNode::isOperator() const {
-    if (value == "+" || value == "-" || value == "*" || value == "/") {
+    if (value == op_plus || value == op_minus || value == op_multiply || value == op_division) {
         return true;
     }
     return false;
 }
 
 bool CNode::isSinCos() const {
-    if (value == "sin" || value == "cos") {
+    if (value == op_sinus || value == op_cosinus) {
         return true;
     }
     return false;

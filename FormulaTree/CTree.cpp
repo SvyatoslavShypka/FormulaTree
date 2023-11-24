@@ -44,30 +44,30 @@ void CTree::printTree(CNode* node) {
 double CTree::evaluate(CNode* node, const map<string, double>& values) {
     if (node == nullptr) return 0.0;
 
-    if (node->value == "+") {
+    if (node->value == op_plus) {
         double result = 0.0;
         for (const auto& child : node->children) {
             result += evaluate(child, values);
         }
         return result;
     }
-    else if (node->value == "-") {
+    else if (node->value == op_minus) {
         return evaluate(node->children[0], values) - evaluate(node->children[1], values);
     }
-    else if (node->value == "*") {
+    else if (node->value == op_multiply) {
         double result = 1.0;
         for (const auto& child : node->children) {
             result *= evaluate(child, values);
         }
         return result;
     }
-    else if (node->value == "/") {
+    else if (node->value == op_division) {
         return evaluate(node->children[0], values) / evaluate(node->children[1], values);
     }
-    else if (node->value == "sin") {
+    else if (node->value == op_sinus) {
         return sin(evaluate(node->children[0], values));
     }
-    else if (node->value == "cos") {
+    else if (node->value == op_cosinus) {
         return cos(evaluate(node->children[0], values));
     }
     else if (values.find(node->value) != values.end()) {
