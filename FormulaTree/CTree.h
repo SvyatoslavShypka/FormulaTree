@@ -25,8 +25,8 @@ public:
 
     void createTree(CNode* currentNode, const string& expression, size_t& offset, int leftWords);
     void printTree(CNode* node);
-    void drawTree(CNode* node, int offset);
-    void detailTree(CNode* node, int count);
+    //void drawTree(CNode* node, int offset);
+    //void detailTree(CNode* node, int count);
     double evaluate(CNode* node, const std::map<std::string, double>& values);
     void parseExpression(const std::string& expression);
 

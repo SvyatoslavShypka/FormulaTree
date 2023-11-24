@@ -172,7 +172,7 @@ void CTree::createTree(CNode* currentNode, const string& expression, size_t& off
             if (currentNode->left == nullptr) {
                 newNode->previous = currentNode;
                 currentNode->left = newNode;
-                if (currentNode->isCos() || currentNode->isSin()) {
+                if (currentNode->isSinCos()) {
                     currentNode->isClosed = true;
                 }
                 createTree(currentNode->left, expression, offset, leftWords);

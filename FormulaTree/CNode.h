@@ -15,7 +15,8 @@ public:
     bool isVariable() const;
     bool isNumber() const;
     bool isOperator() const;
-    bool isSin() const;
-    bool isCos() const;
-    bool isOccupied() const;
+    bool isSinCos() const;
+    //bool isSin() const;
+    //bool isCos() const;
+    //bool isOccupied() const;
 };
