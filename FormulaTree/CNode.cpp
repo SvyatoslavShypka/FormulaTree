@@ -3,7 +3,7 @@
 
 using namespace std;
 
-CNode::CNode(std::string val)
+CNode::CNode(string val)
 {
     value = val;
     left = nullptr;

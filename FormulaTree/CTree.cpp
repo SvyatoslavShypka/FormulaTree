@@ -31,16 +31,16 @@ CTree& CTree::operator=(const CTree& other) {
 // Funkcja do wypisywania drzewa w notacji prefiksowej
 void CTree::printTree(CNode* node) {
     if (node != nullptr) {
-        std::cout << node->value << std::endl;
-        std::cout << (node->left ? "Left is: " + node->left->value : "Left is null") << std::endl;
-        std::cout << (node->right ? "Right is: " + node->right->value : "Right is null") << std::endl;
+        cout << node->value << endl;
+        cout << (node->left ? "Left is: " + node->left->value : "Left is null") << endl;
+        cout << (node->right ? "Right is: " + node->right->value : "Right is null") << endl;
         printTree(node->left);
         printTree(node->right);
     }
 }
 
 // Funkcja do obliczania wartości wyrażenia dla podanych wartości zmiennych
-double CTree::evaluate(CNode* node, const std::map<std::string, double>& values) {
+double CTree::evaluate(CNode* node, const map<string, double>& values) {
     if (node == nullptr) return 0.0;
 
     if (node->value == "+") {
@@ -70,7 +70,7 @@ double CTree::evaluate(CNode* node, const std::map<std::string, double>& values)
 }
 
 // Funkcja parsująca wyrażenie z notacji prefiksowej
-void CTree::parseExpression(const std::string& expression) {
+void CTree::parseExpression(const string& expression) {
     size_t offset = 0;
     root = parseNode(expression, offset);
     printTree(root);
@@ -95,7 +95,7 @@ void CTree::deleteTree(CNode* node) {
     }
 }
 
-CNode* CTree::parseNode(const std::string& expression, size_t& offset) {
+CNode* CTree::parseNode(const string& expression, size_t& offset) {
     //stringstream ss(expression);
     int leftWords = 0;
     
@@ -103,7 +103,7 @@ CNode* CTree::parseNode(const std::string& expression, size_t& offset) {
     int saveOffset;
     //size_t& zero_offset = offset;
     while (offset < expression.size()) {
-        std::string value2;
+        string value2;
         while (offset < expression.size() - 1 && expression[offset] == ' ') {
             offset++; // Skip space
         }
@@ -128,7 +128,7 @@ CNode* CTree::parseNode(const std::string& expression, size_t& offset) {
     if (root == nullptr) {
         root = new CNode(value);
         leftWords--;
-        cout << "Created node with value: " << value << std::endl;
+        cout << "Created node with value: " << value << endl;
     }
     createTree(root, expression, offset, leftWords);
 
@@ -192,13 +192,13 @@ void CTree::createTree(CNode* currentNode, const string& expression, size_t& off
 
 // Funkcja zwracająca liczbę zmiennych w drzewie
 size_t CTree::numberOfVariablesInTree() const {
-    std::set<std::string> variables;
+    set<string> variables;
     collectVariables(root, variables);
     return variables.size();
 }
 
 /// Funkcja pomocnicza do rekurencyjnego zbierania unikalnych zmiennych
-void CTree::collectVariables(const CNode* node, std::set<std::string>& variables) const {
+void CTree::collectVariables(const CNode* node, set<string>& variables) const {
     if (!node) return;
 
     if (node->isVariable()) {
@@ -211,18 +211,18 @@ void CTree::collectVariables(const CNode* node, std::set<std::string>& variables
 
 
 // Funkcja zwracająca nazwę zmiennej na podstawie indeksu
-std::string CTree::getVariableNameAtIndex(size_t index) const {
-    std::set<std::string> variables;
+string CTree::getVariableNameAtIndex(size_t index) const {
+    set<string> variables;
     collectVariables(root, variables);
 
     if (index < variables.size()) {
-        auto it = std::next(variables.begin(), index);
+        auto it = next(variables.begin(), index);
         return *it;
     }
     else {
         // Możesz obsłużyć błąd lub rzucić wyjątek w przypadku nieprawidłowego indeksu
         // W przykładzie używam prostego komunikatu błędu
-        std::cerr << "Error: Index out of range." << std::endl;
+        cerr << "Error: Index out of range." << endl;
         return "";
     }
 }

@@ -10,7 +10,7 @@
 using namespace std;
 
 // Funkcja do wczytywania wartości z stringstream
-void readValues(std::stringstream& ss, std::vector<double>& values) {
+void readValues(stringstream& ss, vector<double>& values) {
     double value;
     while (ss >> value) {
         values.push_back(value);
@@ -57,24 +57,24 @@ int main() {
         } //TODO make print easy: repeat the formula
         else if (cmd == "print") {
             // Obsługa polecenia "print"
-            std::cout << "Tree: ";
+            cout << "Tree: ";
             if (tree.getRoot() == nullptr) {
                 cout << "Tree doesn't exist" << endl;
             }
             else {
                 tree.printTree(tree.getRoot());
-                std::cout << std::endl;
+                cout << endl;
             }
         }
         else if (cmd == "vars") {
             // Obsługa polecenia "vars"
-            std::set<std::string> variables;
+            set<string> variables;
             tree.collectVariables(tree.getRoot(), variables);
-            std::cout << "Variables: ";
+            cout << "Variables: ";
             for (const auto& variable : variables) {
-                std::cout << variable << " ";
+                cout << variable << " ";
             }
-            std::cout << std::endl;
+            cout << endl;
         }
         else if (cmd == "enter") {
             string formula;

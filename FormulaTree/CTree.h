@@ -11,7 +11,7 @@ class CTree {
 private:
     CNode* root;
 
-    CNode* parseNode(const std::string& expression, size_t& offset);
+    CNode* parseNode(const string& expression, size_t& offset);
     CNode* copyTree(const CNode* source);
 
 public:
@@ -27,13 +27,13 @@ public:
     void printTree(CNode* node);
     //void drawTree(CNode* node, int offset);
     //void detailTree(CNode* node, int count);
-    double evaluate(CNode* node, const std::map<std::string, double>& values);
-    void parseExpression(const std::string& expression);
+    double evaluate(CNode* node, const map<string, double>& values);
+    void parseExpression(const string& expression);
 
     CTree& operator+=(const CTree& other);
     //friend CTree operator+(const CTree& lhs, const CTree& rhs);
 
     size_t numberOfVariablesInTree() const;
-    void collectVariables(const CNode* node, std::set<std::string>& variables) const;
-    std::string getVariableNameAtIndex(size_t index) const;
+    void collectVariables(const CNode* node, set<string>& variables) const;
+    string getVariableNameAtIndex(size_t index) const;
 };
