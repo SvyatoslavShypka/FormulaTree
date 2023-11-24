@@ -6,14 +6,14 @@ using namespace std;
 CNode::CNode(string val)
 {
     value = val;
-    left = nullptr;
-    right = nullptr;
+    previous = nullptr;
+    isClosed = false;
 }
 
 CNode* CNode::operator+(CNode* other) {
     CNode* newNode = new CNode("+");
-    newNode->left = this;
-    newNode->right = other;
+    newNode->children.push_back(this);
+    newNode->children.push_back(other);
     return newNode;
 }
 
@@ -53,34 +53,3 @@ bool CNode::isSinCos() const {
     }
     return false;
 }
-//bool CNode::isSin() const {
-//    if (value == "sin") {
-//        return true;
-//    }
-//    return false;
-//}
-////TODO to delete
-//bool CNode::isCos() const {
-//    if (value == "cos") {
-//        return true;
-//    }
-//    return false;
-//}
-//TODO to delete if isClosed enough
-//bool CNode::isOccupied() const {
-//    if (isNumber() || isVariable()) {
-//        return true;
-//    }
-//
-//    if (left == NULL) {
-//        return false;
-//    }
-//    if ((isSin() || isCos()) && left != NULL) {
-//        return true;
-//    }
-//
-//    if (left != NULL && right != NULL) {
-//        return true;
-//    }
-//    return false;;
-//}

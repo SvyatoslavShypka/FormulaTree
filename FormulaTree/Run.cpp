@@ -58,11 +58,22 @@ int main() {
         else if (cmd == "print") {
             // Obsługa polecenia "print"
             cout << "Tree: ";
-            if (tree.getRoot() == nullptr) {
+            if (!tree.getRoot()) {
                 cout << "Tree doesn't exist" << endl;
             }
             else {
                 tree.printTree(tree.getRoot());
+                cout << endl;
+            }
+        }
+        else if (cmd == "det") {
+            // Obsługa polecenia "print"
+            cout << "Tree: ";
+            if (!tree.getRoot()) {
+                cout << "Tree doesn't exist" << endl;
+            }
+            else {
+                tree.detailedPrintTree(tree.getRoot());
                 cout << endl;
             }
         }

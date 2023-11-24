@@ -30,12 +30,29 @@ CTree& CTree::operator=(const CTree& other) {
 
 // Funkcja do wypisywania drzewa w notacji prefiksowej
 void CTree::printTree(CNode* node) {
+    if (node) {
+        cout << node->value << " ";
+
+        // Print children if any
+        if (!node->children.empty()) {
+            for (size_t i = 0; i < node->children.size(); ++i) {
+                printTree(node->children[i]);
+            }
+        }
+        //cout << " ";
+    }
+}
+
+// Funkcja do wypisywania drzewa w notacji prefiksowej
+void CTree::detailedPrintTree(CNode* node) {
     if (node != nullptr) {
         cout << node->value << endl;
-        cout << (node->left ? "Left is: " + node->left->value : "Left is null") << endl;
-        cout << (node->right ? "Right is: " + node->right->value : "Right is null") << endl;
-        printTree(node->left);
-        printTree(node->right);
+        for (const auto& child : node->children) {
+            cout << (child ? "Child is: " + child->value : "Child is null") << endl;
+        }
+        for (const auto& child : node->children) {
+            detailedPrintTree(child);
+        }
     }
 }
 
@@ -44,22 +61,30 @@ double CTree::evaluate(CNode* node, const map<string, double>& values) {
     if (node == nullptr) return 0.0;
 
     if (node->value == "+") {
-        return evaluate(node->left, values) + evaluate(node->right, values);
+        double result = 0.0;
+        for (const auto& child : node->children) {
+            result += evaluate(child, values);
+        }
+        return result;
     }
     else if (node->value == "-") {
-        return evaluate(node->left, values) - evaluate(node->right, values);
+        return evaluate(node->children[0], values) - evaluate(node->children[1], values);
     }
     else if (node->value == "*") {
-        return evaluate(node->left, values) * evaluate(node->right, values);
+        double result = 1.0;
+        for (const auto& child : node->children) {
+            result *= evaluate(child, values);
+        }
+        return result;
     }
     else if (node->value == "/") {
-        return evaluate(node->left, values) / evaluate(node->right, values);
+        return evaluate(node->children[0], values) / evaluate(node->children[1], values);
     }
     else if (node->value == "sin") {
-        return sin(evaluate(node->left, values));
+        return sin(evaluate(node->children[0], values));
     }
     else if (node->value == "cos") {
-        return cos(evaluate(node->left, values));
+        return cos(evaluate(node->children[0], values));
     }
     else if (values.find(node->value) != values.end()) {
         return values.at(node->value);
@@ -73,7 +98,8 @@ double CTree::evaluate(CNode* node, const map<string, double>& values) {
 void CTree::parseExpression(const string& expression) {
     size_t offset = 0;
     root = parseNode(expression, offset);
-    printTree(root);
+    //TODO to comment it
+    detailedPrintTree(root);
 }
 
 CNode* CTree::copyTree(const CNode* source) {
@@ -82,17 +108,21 @@ CNode* CTree::copyTree(const CNode* source) {
     }
 
     CNode* newNode = new CNode(source->value);
-    newNode->left = copyTree(source->left);
-    newNode->right = copyTree(source->right);
+    for (const auto& child : source->children) {
+        newNode->children.push_back(copyTree(child));
+    }
     return newNode;
 }
 
 void CTree::deleteTree(CNode* node) {
     if (node) {
-        deleteTree(node->left);
-        deleteTree(node->right);
+        for (const auto& child : node->children) {
+            deleteTree(child);
+        }
+        node->children.clear();  // Usuń dzieci przed usunięciem węzła
         delete node;
     }
+    root = nullptr;  // Opcjonalnie ustaw korzeń na nullptr po usunięciu całego drzewa
 }
 
 CNode* CTree::parseNode(const string& expression, size_t& offset) {
@@ -149,6 +179,11 @@ void CTree::createTree(CNode* currentNode, const string& expression, size_t& off
         currentNode = currentNode->previous;
     }
 
+    if (currentNode->isOperator() && currentNode->children.size() == 2) {
+        currentNode->isClosed = true;
+        currentNode = currentNode->previous;
+    }
+
     while (offset < expression.size()) {
         string value;
         while (offset < expression.size() && expression[offset] == ' ') {
@@ -169,22 +204,14 @@ void CTree::createTree(CNode* currentNode, const string& expression, size_t& off
             return;
         }
         else {
-            if (currentNode->left == nullptr) {
-                newNode->previous = currentNode;
-                currentNode->left = newNode;
-                if (currentNode->isSinCos()) {
-                    currentNode->isClosed = true;
-                }
-                createTree(currentNode->left, expression, offset, leftWords);
-            }
-            else if (currentNode->right == nullptr) {
-                newNode->previous = currentNode;
-                currentNode->right = newNode;
+            newNode->previous = currentNode;
+            currentNode->children.push_back(newNode);
+            if (currentNode->isSinCos()) {
                 currentNode->isClosed = true;
-                createTree(currentNode->right, expression, offset, leftWords);
+                createTree(currentNode->previous, expression, offset, leftWords);
             }
             else {
-                cout << "incorrect input! There are already two childs. To be corrected: " << endl;
+                createTree(newNode, expression, offset, leftWords);
             }
         }
     }
@@ -197,7 +224,7 @@ size_t CTree::numberOfVariablesInTree() const {
     return variables.size();
 }
 
-/// Funkcja pomocnicza do rekurencyjnego zbierania unikalnych zmiennych
+// Funkcja pomocnicza do rekurencyjnego zbierania unikalnych zmiennych
 void CTree::collectVariables(const CNode* node, set<string>& variables) const {
     if (!node) return;
 
@@ -205,10 +232,10 @@ void CTree::collectVariables(const CNode* node, set<string>& variables) const {
         variables.insert(node->value);
     }
 
-    collectVariables(node->left, variables);
-    collectVariables(node->right, variables);
+    for (const auto& child : node->children) {
+        collectVariables(child, variables);
+    }
 }
-
 
 // Funkcja zwracająca nazwę zmiennej na podstawie indeksu
 string CTree::getVariableNameAtIndex(size_t index) const {
@@ -233,8 +260,17 @@ CNode* mergeTrees(const CNode* left, const CNode* right) {
     if (!right) return new CNode(left->value);
 
     CNode* newRoot = new CNode(left->value);
-    newRoot->left = mergeTrees(left->left, right->left);
-    newRoot->right = mergeTrees(left->right, right->right);
+
+    // Łączenie dzieci drzew
+    size_t leftSize = left->children.size();
+    size_t rightSize = right->children.size();
+
+    for (size_t i = 0; i < max(leftSize, rightSize); ++i) {
+        const CNode* leftChild = i < leftSize ? left->children[i] : nullptr;
+        const CNode* rightChild = i < rightSize ? right->children[i] : nullptr;
+
+        newRoot->children.push_back(mergeTrees(leftChild, rightChild));
+    }
 
     return newRoot;
 }

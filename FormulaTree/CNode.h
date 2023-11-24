@@ -1,13 +1,13 @@
 #pragma once
 
 #include <string>
+#include <vector>
 using namespace std;
 
 class CNode {
 public:
     string value;
-    CNode* left;
-    CNode* right;
+    vector<CNode*> children;
     CNode* previous;
     bool isClosed;
 

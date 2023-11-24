@@ -25,6 +25,7 @@ public:
 
     void createTree(CNode* currentNode, const string& expression, size_t& offset, int leftWords);
     void printTree(CNode* node);
+    void detailedPrintTree(CNode* node);
     //void drawTree(CNode* node, int offset);
     //void detailTree(CNode* node, int count);
     double evaluate(CNode* node, const map<string, double>& values);
