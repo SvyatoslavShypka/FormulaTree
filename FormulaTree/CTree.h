@@ -23,9 +23,8 @@ public:
 
     CTree& operator=(const CTree& other);
 
-    void createTree(CNode* currentNode, const string& expression, size_t& offset, int leftWords);
+    void createTree(CNode* currentNode, const string& expression, size_t& offset);
     void printTree(CNode* node);
-    void detailedPrintTree(CNode* node);
     double evaluate(CNode* node, const map<string, double>& values);
     void parseExpression(const string& expression);
 

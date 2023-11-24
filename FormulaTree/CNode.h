@@ -16,8 +16,9 @@ public:
     bool isVariable() const;
     bool isNumber() const;
     bool isOperator() const;
-    //TODO to delete
-    //bool isMultiOperator() const;
     bool isSinCos() const;
     CNode* findLastNode(CNode* node) const;
 };
+
+const string index_error = "Error: Index out of range.";
+const string full_childs = "incorrect input! There are already two childs";

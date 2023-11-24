@@ -4,9 +4,7 @@
 #include <string> 
 #include <vector> 
 #include <sstream>
-//TODO check #include and constants
 using namespace std;
-//TODO change nullptr on NULL
 CTree::CTree()
 {
     root = nullptr;
@@ -42,19 +40,6 @@ void CTree::printTree(CNode* node) {
     }
 }
 
-// Funkcja do wypisywania drzewa w notacji prefiksowej
-void CTree::detailedPrintTree(CNode* node) {
-    if (node != nullptr) {
-        cout << node->value << endl;
-        for (const auto& child : node->children) {
-            cout << (child ? "Child is: " + child->value : "Child is null") << endl;
-        }
-        for (const auto& child : node->children) {
-            detailedPrintTree(child);
-        }
-    }
-}
-
 // Funkcja do obliczania wartości wyrażenia dla podanych wartości zmiennych
 double CTree::evaluate(CNode* node, const map<string, double>& values) {
     if (node == nullptr) return 0.0;
@@ -85,14 +70,6 @@ double CTree::evaluate(CNode* node, const map<string, double>& values) {
     else if (node->value == "cos") {
         return cos(evaluate(node->children[0], values));
     }
-    //TODO to delete
-    //if (node->value == "multioperator") {
-    //    double result = 0.0;
-    //    for (const auto& child : node->children) {
-    //        result += evaluate(child, values);
-    //    }
-    //    return result;
-    //}
     else if (values.find(node->value) != values.end()) {
         return values.at(node->value);
     }
@@ -105,8 +82,6 @@ double CTree::evaluate(CNode* node, const map<string, double>& values) {
 void CTree::parseExpression(const string& expression) {
     size_t offset = 0;
     root = parseNode(expression, offset);
-    //TODO to comment it
-    detailedPrintTree(root);
 }
 
 CNode* CTree::copyTree(const CNode* source) {
@@ -133,47 +108,25 @@ void CTree::deleteTree(CNode* node) {
 }
 
 CNode* CTree::parseNode(const string& expression, size_t& offset) {
-    //stringstream ss(expression);
-    //TODO to delete all leftWords
-    int leftWords = 0;
     
     string value;
-    int saveOffset;
-    //size_t& zero_offset = offset;
-    while (offset < expression.size()) {
-        string value2;
-        while (offset < expression.size() - 1 && expression[offset] == ' ') {
-            offset++; // Skip space
-        }
-        saveOffset = offset;
-        //Collect value until next space
-        while (offset < expression.size() && expression[offset] != ' ') {
-            value2 += expression[offset++];
-        }
-        leftWords++;
-        cout << value2 << " - " << to_string(leftWords) << endl;
+    while (offset < expression.size() - 1 && expression[offset] == ' ') {
+        offset++; // Skip space
     }
-    offset = 1; //TODO change it
     while (offset < expression.size() && expression[offset] != ' ') {
         value += expression[offset++];
     }
 
-    if (leftWords == 0) {
-        cout << "incorrect input" << endl;
-        return nullptr;
-    }
     //CNode* newNode = new CNode(value);
     if (root == nullptr) {
         root = new CNode(value);
-        leftWords--;
-        cout << "Created node with value: " << value << endl;
     }
-    createTree(root, expression, offset, leftWords);
+    createTree(root, expression, offset);
 
     return root;
 }
 
-void CTree::createTree(CNode* currentNode, const string& expression, size_t& offset, int leftWords) {
+void CTree::createTree(CNode* currentNode, const string& expression, size_t& offset) {
     //finish recursion
     if (!currentNode) {
         return;
@@ -206,9 +159,8 @@ void CTree::createTree(CNode* currentNode, const string& expression, size_t& off
         while (currentNode->isClosed) {
             currentNode = currentNode->previous;
         }
-        leftWords--;
         if (currentNode->isVariable() || currentNode->isNumber()) {
-            cout << "incorrect input! There are already two childs. To be corrected: " << endl;
+            cout << full_childs << endl;
             currentNode = currentNode->previous;
             return;
         }
@@ -217,10 +169,10 @@ void CTree::createTree(CNode* currentNode, const string& expression, size_t& off
             currentNode->children.push_back(newNode);
             if (currentNode->isSinCos()) {
                 currentNode->isClosed = true;
-                createTree(currentNode->previous, expression, offset, leftWords);
+                createTree(currentNode->previous, expression, offset);
             }
             else {
-                createTree(newNode, expression, offset, leftWords);
+                createTree(newNode, expression, offset);
             }
         }
     }
@@ -256,9 +208,7 @@ string CTree::getVariableNameAtIndex(size_t index) const {
         return *it;
     }
     else {
-        // Możesz obsłużyć błąd lub rzucić wyjątek w przypadku nieprawidłowego indeksu
-        // W przykładzie używam prostego komunikatu błędu
-        cerr << "Error: Index out of range." << endl;
+        cerr << index_error << endl;
         return "";
     }
 }
@@ -271,22 +221,6 @@ CNode* CTree::mergeTrees(CNode* left, CNode* right) {
     CNode* lastButOneNode = lastNode->previous;
     delete lastNode;
     lastButOneNode->children[lastButOneNode->children.size() - 1] = copyTree(right);
-
-    //cout << "lastNode: " << lastNode->value << endl;
-
-
-    //CNode* newRoot = new CNode(left->value);
-
-    //// Łączenie dzieci drzew
-    //size_t leftSize = left->children.size();
-    //size_t rightSize = right->children.size();
-
-    //for (size_t i = 0; i < max(leftSize, rightSize); ++i) {
-    //    CNode* leftChild = i < leftSize ? left->children[i] : nullptr;
-    //    CNode* rightChild = i < rightSize ? right->children[i] : nullptr;
-
-    //    newRoot->children.push_back(mergeTrees(leftChild, rightChild));
-    //}
 
     return left;
 }

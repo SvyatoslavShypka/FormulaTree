@@ -66,17 +66,6 @@ int main() {
                 cout << endl;
             }
         }
-        else if (cmd == "det") {
-            // Obsługa polecenia "print"
-            cout << "Tree: ";
-            if (!tree.getRoot()) {
-                cout << "Tree doesn't exist" << endl;
-            }
-            else {
-                tree.detailedPrintTree(tree.getRoot());
-                cout << endl;
-            }
-        }
         else if (cmd == "vars") {
             // Obsługa polecenia "vars"
             set<string> variables;
@@ -92,7 +81,7 @@ int main() {
             getline(ss, formula);
             tree.parseExpression(formula);
             cout << "Expression entered and parsed." << endl;
-        } //TODO To correct delete with memory leakage
+        } 
         else if (cmd == "del") {
             tree.deleteTree(tree.getRoot());
             cout << "Tree was deleted" << endl;

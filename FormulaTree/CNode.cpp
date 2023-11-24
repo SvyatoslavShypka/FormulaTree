@@ -1,5 +1,4 @@
 #include "CNode.h"
-//#include <iostream>
 
 using namespace std;
 
@@ -18,8 +17,6 @@ CNode* CNode::operator+(CNode* other) {
 }
 
 bool CNode::isVariable() const {
-    //TODO to delete
-    //if (value.empty() || !isalpha(value[0]) || isSinCos() || isMultiOperator()) {
     if (value.empty() || !isalpha(value[0]) || isSinCos()) {
         return false;
     }
@@ -47,13 +44,6 @@ bool CNode::isOperator() const {
     }
     return false;
 }
-//TODO to delete
-//bool CNode::isMultiOperator() const {
-//    if (value == "multioperator") {
-//        return true;
-//    }
-//    return false;
-//}
 
 bool CNode::isSinCos() const {
     if (value == "sin" || value == "cos") {
