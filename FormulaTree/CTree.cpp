@@ -209,7 +209,7 @@ string CTree::getVariableNameAtIndex(size_t index) const {
     }
     else {
         cerr << index_error << endl;
-        return "";
+        return message_empty;
     }
 }
 

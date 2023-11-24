@@ -44,3 +44,5 @@ const string op_multiply = "*";
 const string op_division = "/";
 const string op_sinus = "sin";
 const string op_cosinus = "cos";
+const string message_space = " ";
+const string message_empty = "";

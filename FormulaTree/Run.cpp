@@ -72,7 +72,7 @@ int main() {
             tree.collectVariables(tree.getRoot(), variables);
             cout << message_variables;
             for (const auto& variable : variables) {
-                cout << variable << " ";
+                cout << variable << message_space;
             }
             cout << endl;
         }
