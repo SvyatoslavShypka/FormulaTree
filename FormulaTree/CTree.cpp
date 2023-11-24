@@ -86,6 +86,13 @@ double CTree::evaluate(CNode* node, const map<string, double>& values) {
     else if (node->value == "cos") {
         return cos(evaluate(node->children[0], values));
     }
+    if (node->value == "multioperator") {
+        double result = 0.0;
+        for (const auto& child : node->children) {
+            result += evaluate(child, values);
+        }
+        return result;
+    }
     else if (values.find(node->value) != values.end()) {
         return values.at(node->value);
     }
@@ -167,7 +174,7 @@ CNode* CTree::parseNode(const string& expression, size_t& offset) {
 
 void CTree::createTree(CNode* currentNode, const string& expression, size_t& offset, int leftWords) {
     //finish recursion
-    if (currentNode == nullptr || leftWords == 0) {
+    if (!currentNode) {
         return;
     }
     while (currentNode->isClosed) {
@@ -179,7 +186,7 @@ void CTree::createTree(CNode* currentNode, const string& expression, size_t& off
         currentNode = currentNode->previous;
     }
 
-    if (currentNode->isOperator() && currentNode->children.size() == 2) {
+    if (currentNode->isOperator() && currentNode->children.size() == 2 && !currentNode->isMultiOperator()) {
         currentNode->isClosed = true;
         currentNode = currentNode->previous;
     }

@@ -18,7 +18,7 @@ CNode* CNode::operator+(CNode* other) {
 }
 
 bool CNode::isVariable() const {
-    if (value.empty() || !isalpha(value[0]) || isSinCos()) {
+    if (value.empty() || !isalpha(value[0]) || isSinCos() || isMultiOperator()) {
         return false;
     }
 
@@ -43,7 +43,13 @@ bool CNode::isOperator() const {
     if (value == "+" || value == "-" || value == "*" || value == "/") {
         return true;
     }
+    return false;
+}
 
+bool CNode::isMultiOperator() const {
+    if (value == "multioperator") {
+        return true;
+    }
     return false;
 }
 //TODO make isSinCos

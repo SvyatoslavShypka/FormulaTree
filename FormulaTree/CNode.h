@@ -16,5 +16,6 @@ public:
     bool isVariable() const;
     bool isNumber() const;
     bool isOperator() const;
+    bool isMultiOperator() const;
     bool isSinCos() const;
 };
