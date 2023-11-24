@@ -21,7 +21,7 @@ int main() {
     CTree tree;
 
     while (true) {
-        cout << "Enter command: ";
+        cout << message_enter;
         string command;
         getline(cin, command);
 
@@ -29,7 +29,7 @@ int main() {
         string cmd;
         ss >> cmd;
 
-        if (cmd == "comp") {
+        if (cmd == command_comp) {
             // Obsługa polecenia "comp"
             // Odczytaj wartości i przypisz do odpowiednich zmiennych w drzewie
 
@@ -38,7 +38,7 @@ int main() {
 
             // Sprawdź, czy liczba wartości jest zgodna z ilością zmiennych w drzewie
             if (values.size() != tree.numberOfVariablesInTree()) {
-                cout << "Error: Incorrect number of values provided for computation." << endl;
+                cout << message_err << endl;
             }
             else {
                 // Stworzenie mapy zmiennych i ich wartości
@@ -52,54 +52,51 @@ int main() {
                     tree.getRoot(), variableValues);
 
                 // Wyświetlenie wyniku
-                cout << "Result: " << result << endl;
+                cout << message_result << result << endl;
             }
         } //TODO make print easy: repeat the formula
-        else if (cmd == "print") {
+        else if (cmd == message_print) {
             // Obsługa polecenia "print"
-            cout << "Tree: ";
+            cout << message_tree;
             if (!tree.getRoot()) {
-                cout << "Tree doesn't exist" << endl;
+                cout << message_no_tree << endl;
             }
             else {
                 tree.printTree(tree.getRoot());
                 cout << endl;
             }
         }
-        else if (cmd == "vars") {
+        else if (cmd == message_vars) {
             // Obsługa polecenia "vars"
             set<string> variables;
             tree.collectVariables(tree.getRoot(), variables);
-            cout << "Variables: ";
+            cout << message_variables;
             for (const auto& variable : variables) {
                 cout << variable << " ";
             }
             cout << endl;
         }
-        else if (cmd == "enter") {
+        else if (cmd == command_enter) {
             string formula;
             getline(ss, formula);
             tree.parseExpression(formula);
-            cout << "Expression entered and parsed." << endl;
+            cout << message_parsed << endl;
         } 
-        else if (cmd == "del") {
+        else if (cmd == command_del) {
             tree.deleteTree(tree.getRoot());
-            cout << "Tree was deleted" << endl;
+            cout << message_deleted_tree << endl;
         }
-        else if (cmd == "join") {
+        else if (cmd == command_join) {
             CTree newTree;
             string formula;
             getline(ss, formula);
             newTree.parseExpression(formula);
             tree += newTree;
-            cout << "Tree was merged" << endl;
+            cout << message_merged_tree << endl;
         }
-        else if (cmd == "exit") {
-            cout << "Exit" << endl;
+        else if (cmd == command_exit) {
+            cout << command_exit << endl;
             return 0;
-        }
-        else { //TODO Delete Tree
-            // Obsługa innych poleceń...
         }
     }
 
